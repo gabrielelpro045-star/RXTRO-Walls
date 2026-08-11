@@ -1,1 +1,1628 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="robots"
+    content="noindex,nofollow"
+  >
+
+  <title>RXTRO Walls — Owner Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: #070707;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    header {
+      border-bottom: 1px solid #222;
+      background: #0a0a0a;
+    }
+
+    .header {
+      max-width: 1100px;
+      margin: auto;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .logo span {
+      color: #777;
+      font-weight: 500;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .login {
+      max-width: 470px;
+      margin: 60px auto;
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 20px;
+      padding: 30px;
+    }
+
+    .dashboard {
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 20px;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 30px;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin-top: 45px;
+      margin-bottom: 15px;
+    }
+
+    .subtitle {
+      color: #888;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      background: #080808;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 9px;
+      padding: 13px;
+      margin-bottom: 18px;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #666;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    button.primary {
+      background: #fff;
+      color: #000;
+      border: 0;
+      padding: 13px 18px;
+      border-radius: 9px;
+      font-weight: 900;
+    }
+
+    button.primary:hover {
+      opacity: .9;
+    }
+
+    button.secondary {
+      background: #171717;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 11px 16px;
+      border-radius: 9px;
+    }
+
+    button.secondary:hover {
+      border-color: #666;
+    }
+
+    .status {
+      margin-top: 15px;
+      background: #181818;
+      border: 1px solid #292929;
+      color: #999;
+      padding: 12px;
+      border-radius: 9px;
+      line-height: 1.4;
+      min-height: 20px;
+    }
+
+    .preview {
+      display: none;
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      background: #050505;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 20px;
+      color: #aaa;
+    }
+
+    .checkbox input {
+      width: auto;
+      margin: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .stat {
+      background: #151515;
+      border: 1px solid #292929;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .stat small {
+      display: block;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    .stat strong {
+      font-size: 25px;
+    }
+
+    .wall-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .wall {
+      background: #151515;
+      border: 1px solid #252525;
+      border-radius: 13px;
+      overflow: hidden;
+    }
+
+    .wall img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+    }
+
+    .wall-info {
+      padding: 12px;
+    }
+
+    .wall-info strong {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wall-info small {
+      display: block;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    .delete {
+      margin-top: 10px;
+      background: #281010;
+      color: #ff9999;
+      border: 1px solid #4a2020;
+      padding: 8px 11px;
+      border-radius: 7px;
+      font-size: 12px;
+    }
+
+    .delete:hover {
+      background: #351414;
+    }
+
+    .progress {
+      width: 100%;
+      height: 6px;
+      background: #222;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #fff;
+      transition: width .2s;
+    }
+
+    @media (max-width: 800px) {
+      .wall-list {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 20px 15px;
+      }
+
+      .dashboard {
+        padding: 20px;
+      }
+
+      .wall-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <header>
+    <div class="header">
+
+      <div class="logo">
+        RXTRO <span>WALLS</span>
+      </div>
+
+      <button
+        class="secondary"
+        id="logoutButton"
+      >
+        Logout
+      </button>
+
+    </div>
+  </header>
+
+
+  <main>
+
+    <!-- LOGIN -->
+
+    <div
+      id="loginBox"
+      class="login"
+    >
+
+      <h1>
+        Owner Login
+      </h1>
+
+      <p class="subtitle">
+        Sign in to manage your RXTRO Walls library.
+      </p>
+
+
+      <form id="loginForm">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          placeholder="Your owner email"
+          autocomplete="email"
+          required
+        >
+
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          placeholder="Your password"
+          autocomplete="current-password"
+          required
+        >
+
+
+        <button
+          class="primary"
+          type="submit"
+        >
+          Login
+        </button>
+
+      </form>
+
+
+      <div
+        id="loginStatus"
+        class="status"
+      ></div>
+
+    </div>
+
+
+    <!-- DASHBOARD -->
+
+    <div
+      id="dashboard"
+      class="dashboard hidden"
+    >
+
+      <h1>
+        RXTRO Walls Dashboard
+      </h1>
+
+      <p class="subtitle">
+        Upload and manage your wallpapers.
+      </p>
+
+
+      <!-- STATS -->
+
+      <div class="stats">
+
+        <div class="stat">
+
+          <small>
+            Wallpapers
+          </small>
+
+          <strong id="totalWallpapers">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="stat">
+
+          <small>
+            Downloads
+          </small>
+
+          <strong id="totalDownloads">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="stat">
+
+          <small>
+            Views
+          </small>
+
+          <strong id="totalViews">
+            0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- UPLOAD -->
+
+      <h2>
+        Upload Wallpaper
+      </h2>
+
+
+      <form id="uploadForm">
+
+        <label for="image">
+          Wallpaper Image
+        </label>
+
+        <input
+          id="image"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          required
+        >
+
+
+        <img
+          id="preview"
+          class="preview"
+          alt="Wallpaper preview"
+        >
+
+
+        <label for="title">
+          Title
+        </label>
+
+        <input
+          id="title"
+          type="text"
+          placeholder="BMW M4 Night"
+          maxlength="100"
+          required
+        >
+
+
+        <label for="category">
+          Category
+        </label>
+
+        <select id="category">
+
+          <option value="Cars">
+            Cars
+          </option>
+
+          <option value="Football">
+            Football
+          </option>
+
+          <option value="Basketball">
+            Basketball
+          </option>
+
+          <option value="Gaming">
+            Gaming
+          </option>
+
+          <option value="Aesthetic">
+            Aesthetic
+          </option>
+
+          <option value="Dark">
+            Dark
+          </option>
+
+          <option value="AI">
+            AI
+          </option>
+
+        </select>
+
+
+        <label for="device">
+          Device
+        </label>
+
+        <select id="device">
+
+          <option value="iPhone">
+            iPhone
+          </option>
+
+          <option value="Android">
+            Android
+          </option>
+
+          <option value="Desktop">
+            Desktop
+          </option>
+
+        </select>
+
+
+        <label for="description">
+          Description
+        </label>
+
+        <textarea
+          id="description"
+          maxlength="500"
+          placeholder="A cinematic wallpaper for your phone."
+        ></textarea>
+
+
+        <label class="checkbox">
+
+          <input
+            id="premium"
+            type="checkbox"
+          >
+
+          Premium wallpaper
+
+        </label>
+
+
+        <button
+          class="primary"
+          type="submit"
+          id="publishButton"
+        >
+          Publish Wallpaper
+        </button>
+
+
+        <div
+          class="progress"
+          id="progress"
+        >
+          <div
+            class="progress-bar"
+            id="progressBar"
+          ></div>
+        </div>
+
+      </form>
+
+
+      <div
+        id="uploadStatus"
+        class="status"
+      ></div>
+
+
+      <!-- WALLPAPER LIST -->
+
+      <h2>
+        Your Wallpapers
+      </h2>
+
+
+      <div
+        id="wallList"
+        class="wall-list"
+      ></div>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    const client =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    const loginBox =
+      document.getElementById(
+        "loginBox"
+      );
+
+
+    const dashboard =
+      document.getElementById(
+        "dashboard"
+      );
+
+
+    const loginForm =
+      document.getElementById(
+        "loginForm"
+      );
+
+
+    const loginStatus =
+      document.getElementById(
+        "loginStatus"
+      );
+
+
+    const uploadForm =
+      document.getElementById(
+        "uploadForm"
+      );
+
+
+    const uploadStatus =
+      document.getElementById(
+        "uploadStatus"
+      );
+
+
+    const preview =
+      document.getElementById(
+        "preview"
+      );
+
+
+    const progress =
+      document.getElementById(
+        "progress"
+      );
+
+
+    const progressBar =
+      document.getElementById(
+        "progressBar"
+      );
+
+
+    /*
+      CHECK EXISTING LOGIN
+    */
+
+    async function checkSession() {
+
+      const {
+        data,
+        error
+      } =
+        await client.auth.getSession();
+
+
+      if (error) {
+
+        console.error(error);
+
+        return;
+
+      }
+
+
+      if (data.session) {
+
+        showDashboard();
+
+      }
+
+    }
+
+
+    /*
+      LOGIN
+    */
+
+    loginForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+          document.getElementById(
+            "email"
+          ).value.trim();
+
+
+        const password =
+          document.getElementById(
+            "password"
+          ).value;
+
+
+        loginStatus.textContent =
+          "Signing in...";
+
+
+        const {
+          error
+        } =
+          await client.auth
+            .signInWithPassword({
+
+              email: email,
+
+              password: password
+
+            });
+
+
+        if (error) {
+
+          loginStatus.textContent =
+            error.message;
+
+          return;
+
+        }
+
+
+        loginStatus.textContent =
+          "Login successful.";
+
+
+        showDashboard();
+
+      }
+    );
+
+
+    /*
+      SHOW DASHBOARD
+    */
+
+    function showDashboard() {
+
+      loginBox.classList.add(
+        "hidden"
+      );
+
+
+      dashboard.classList.remove(
+        "hidden"
+      );
+
+
+      loadAdminWallpapers();
+
+    }
+
+
+    /*
+      LOGOUT
+    */
+
+    document
+      .getElementById(
+        "logoutButton"
+      )
+      .addEventListener(
+        "click",
+        async function() {
+
+          await client.auth.signOut();
+
+          location.reload();
+
+        }
+      );
+
+
+    /*
+      IMAGE PREVIEW
+    */
+
+    document
+      .getElementById(
+        "image"
+      )
+      .addEventListener(
+        "change",
+        function(event) {
+
+          const file =
+            event.target.files[0];
+
+
+          if (!file) {
+
+            preview.style.display =
+              "none";
+
+            return;
+
+          }
+
+
+          if (
+            ![
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ].includes(file.type)
+          ) {
+
+            uploadStatus.textContent =
+              "Please use JPG, PNG or WEBP.";
+
+            event.target.value = "";
+
+            preview.style.display =
+              "none";
+
+            return;
+
+          }
+
+
+          if (
+            file.size >
+            10 * 1024 * 1024
+          ) {
+
+            uploadStatus.textContent =
+              "Maximum file size is 10 MB.";
+
+            event.target.value = "";
+
+            preview.style.display =
+              "none";
+
+            return;
+
+          }
+
+
+          preview.src =
+            URL.createObjectURL(
+              file
+            );
+
+
+          preview.style.display =
+            "block";
+
+
+          uploadStatus.textContent =
+            "";
+
+        }
+      );
+
+
+    /*
+      UPLOAD WALLPAPER
+    */
+
+    uploadForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const {
+          data: sessionData
+        } =
+          await client.auth.getSession();
+
+
+        if (!sessionData.session) {
+
+          uploadStatus.textContent =
+            "Your session expired. Please log in again.";
+
+          return;
+
+        }
+
+
+        const file =
+          document.getElementById(
+            "image"
+          ).files[0];
+
+
+        const title =
+          document.getElementById(
+            "title"
+          ).value.trim();
+
+
+        const category =
+          document.getElementById(
+            "category"
+          ).value;
+
+
+        const device =
+          document.getElementById(
+            "device"
+          ).value;
+
+
+        const description =
+          document.getElementById(
+            "description"
+          ).value.trim();
+
+
+        const premium =
+          document.getElementById(
+            "premium"
+          ).checked;
+
+
+        if (!file) {
+
+          uploadStatus.textContent =
+            "Please select an image.";
+
+          return;
+
+        }
+
+
+        const validTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ];
+
+
+        if (
+          !validTypes.includes(
+            file.type
+          )
+        ) {
+
+          uploadStatus.textContent =
+            "Only JPG, PNG and WEBP are supported.";
+
+          return;
+
+        }
+
+
+        if (
+          file.size >
+          10 * 1024 * 1024
+        ) {
+
+          uploadStatus.textContent =
+            "Maximum file size is 10 MB.";
+
+          return;
+
+        }
+
+
+        const publishButton =
+          document.getElementById(
+            "publishButton"
+          );
+
+
+        publishButton.disabled =
+          true;
+
+
+        publishButton.textContent =
+          "Uploading...";
+
+
+        uploadStatus.textContent =
+          "Uploading wallpaper...";
+
+
+        progress.style.display =
+          "block";
+
+
+        progressBar.style.width =
+          "20%";
+
+
+        try {
+
+          /*
+            CREATE UNIQUE FILE NAME
+          */
+
+          const extension =
+            file.name
+              .split(".")
+              .pop()
+              .toLowerCase();
+
+
+          const fileName =
+            crypto.randomUUID()
+            + "."
+            + extension;
+
+
+          const storagePath =
+            "wallpapers/"
+            + fileName;
+
+
+          /*
+            UPLOAD TO SUPABASE STORAGE
+          */
+
+          const {
+            error: uploadError
+          } =
+            await client
+              .storage
+              .from("wallpapers")
+              .upload(
+                storagePath,
+                file,
+                {
+                  contentType:
+                    file.type,
+
+                  cacheControl:
+                    "3600",
+
+                  upsert:
+                    false
+                }
+              );
+
+
+          if (uploadError) {
+
+            throw uploadError;
+
+          }
+
+
+          progressBar.style.width =
+            "60%";
+
+
+          /*
+            GET PUBLIC URL
+          */
+
+          const {
+            data: urlData
+          } =
+            client
+              .storage
+              .from("wallpapers")
+              .getPublicUrl(
+                storagePath
+              );
+
+
+          if (
+            !urlData ||
+            !urlData.publicUrl
+          ) {
+
+            throw new Error(
+              "Could not create image URL."
+            );
+
+          }
+
+
+          /*
+            SAVE WALLPAPER TO DATABASE
+          */
+
+          const {
+            error: databaseError
+          } =
+            await client
+              .from("wallpapers")
+              .insert({
+
+                title:
+                  title,
+
+                category:
+                  category,
+
+                device:
+                  device,
+
+                description:
+                  description,
+
+                image_url:
+                  urlData.publicUrl,
+
+                storage_path:
+                  storagePath,
+
+                is_premium:
+                  premium,
+
+                downloads:
+                  0,
+
+                views:
+                  0
+
+              });
+
+
+          if (databaseError) {
+
+            /*
+              REMOVE IMAGE IF
+              DATABASE INSERT FAILS
+            */
+
+            await client
+              .storage
+              .from("wallpapers")
+              .remove([
+                storagePath
+              ]);
+
+
+            throw databaseError;
+
+          }
+
+
+          progressBar.style.width =
+            "100%";
+
+
+          uploadStatus.textContent =
+            "✓ Wallpaper published successfully!";
+
+
+          /*
+            RESET FORM
+          */
+
+          uploadForm.reset();
+
+
+          preview.src =
+            "";
+
+
+          preview.style.display =
+            "none";
+
+
+          setTimeout(
+            function() {
+
+              progress.style.display =
+                "none";
+
+              progressBar.style.width =
+                "0%";
+
+            },
+            1000
+          );
+
+
+          /*
+            REFRESH WALLPAPER LIST
+          */
+
+          await loadAdminWallpapers();
+
+
+        } catch (error) {
+
+          console.error(
+            "Upload error:",
+            error
+          );
+
+
+          uploadStatus.textContent =
+            "Upload error: "
+            + error.message;
+
+
+          progress.style.display =
+            "none";
+
+          progressBar.style.width =
+            "0%";
+
+        }
+
+
+        publishButton.disabled =
+          false;
+
+
+        publishButton.textContent =
+          "Publish Wallpaper";
+
+      }
+    );
+
+
+    /*
+      LOAD WALLPAPERS
+    */
+
+    async function loadAdminWallpapers() {
+
+      const {
+        data,
+        error
+      } =
+        await client
+          .from("wallpapers")
+          .select("*")
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        console.error(error);
+
+        document.getElementById(
+          "wallList"
+        ).innerHTML =
+          `<p style="color:#888">
+            Unable to load wallpapers:
+            ${escapeHtml(error.message)}
+          </p>`;
+
+        return;
+
+      }
+
+
+      const list =
+        document.getElementById(
+          "wallList"
+        );
+
+
+      list.innerHTML =
+        "";
+
+
+      let downloads =
+        0;
+
+
+      let views =
+        0;
+
+
+      (data || []).forEach(
+        wallpaper => {
+
+          downloads +=
+            Number(
+              wallpaper.downloads || 0
+            );
+
+
+          views +=
+            Number(
+              wallpaper.views || 0
+            );
+
+
+          const item =
+            document.createElement(
+              "article"
+            );
+
+
+          item.className =
+            "wall";
+
+
+          item.innerHTML = `
+
+            <img
+              src="${escapeHtml(wallpaper.image_url)}"
+              alt="${escapeHtml(wallpaper.title)}"
+              loading="lazy"
+            >
+
+            <div class="wall-info">
+
+              <strong>
+                ${escapeHtml(wallpaper.title)}
+              </strong>
+
+              <small>
+                ${escapeHtml(wallpaper.category)}
+                ·
+                ${escapeHtml(wallpaper.device)}
+              </small>
+
+              <small>
+                ${Number(wallpaper.downloads || 0)}
+                downloads
+              </small>
+
+              <small>
+                ${Number(wallpaper.views || 0)}
+                views
+              </small>
+
+              <button
+                class="delete"
+                data-id="${escapeHtml(wallpaper.id)}"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          `;
+
+
+          const deleteButton =
+            item.querySelector(
+              ".delete"
+            );
+
+
+          deleteButton.addEventListener(
+            "click",
+            function() {
+
+              deleteWallpaper(
+                wallpaper.id
+              );
+
+            }
+          );
+
+
+          list.appendChild(
+            item
+          );
+
+        }
+      );
+
+
+      document.getElementById(
+        "totalWallpapers"
+      ).textContent =
+        data
+          ? data.length
+          : 0;
+
+
+      document.getElementById(
+        "totalDownloads"
+      ).textContent =
+        downloads;
+
+
+      document.getElementById(
+        "totalViews"
+      ).textContent =
+        views;
+
+
+      if (
+        !data ||
+        data.length === 0
+      ) {
+
+        list.innerHTML =
+          `<p style="color:#777">
+            No wallpapers yet.
+          </p>`;
+
+      }
+
+    }
+
+
+    /*
+      DELETE WALLPAPER
+    */
+
+    async function deleteWallpaper(
+      id
+    ) {
+
+      const confirmed =
+        confirm(
+          "Delete this wallpaper permanently?"
+        );
+
+
+      if (!confirmed) {
+
+        return;
+
+      }
+
+
+      try {
+
+        /*
+          FIND STORAGE PATH
+        */
+
+        const {
+          data,
+          error: findError
+        } =
+          await client
+            .from("wallpapers")
+            .select(
+              "storage_path"
+            )
+            .eq(
+              "id",
+              id
+            )
+            .single();
+
+
+        if (findError) {
+
+          throw findError;
+
+        }
+
+
+        /*
+          DELETE DATABASE RECORD
+        */
+
+        const {
+          error: deleteError
+        } =
+          await client
+            .from("wallpapers")
+            .delete()
+            .eq(
+              "id",
+              id
+            );
+
+
+        if (deleteError) {
+
+          throw deleteError;
+
+        }
+
+
+        /*
+          DELETE IMAGE
+          FROM STORAGE
+        */
+
+        if (
+          data &&
+          data.storage_path
+        ) {
+
+          const {
+            error: storageError
+          } =
+            await client
+              .storage
+              .from("wallpapers")
+              .remove([
+                data.storage_path
+              ]);
+
+
+          if (storageError) {
+
+            console.error(
+              storageError
+            );
+
+          }
+
+        }
+
+
+        await loadAdminWallpapers();
+
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+
+        alert(
+          "Could not delete wallpaper: "
+          + error.message
+        );
+
+      }
+
+    }
+
+
+    /*
+      ESCAPE HTML
+    */
+
+    function escapeHtml(
+      text
+    ) {
+
+      return String(
+        text ?? ""
+      ).replace(
+        /[&<>"']/g,
+        function(character) {
+
+          return {
+
+            "&": "&amp;",
+
+            "<": "&lt;",
+
+            ">": "&gt;",
+
+            '"': "&quot;",
+
+            "'": "&#039;"
+
+          }[character];
+
+        }
+      );
+
+    }
+
+
+    /*
+      START
+    */
+
+    checkSession();
+
+  </script>
+
+</body>
+
+</html>
