@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <meta name="robots" content="noindex,nofollow">
 
   <title>RXTRO Walls — Admin</title>
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
+
+  <!-- RXTRO configuration -->
+  <script src="./config.js"></script>
 
   <style>
     * {
@@ -38,7 +40,7 @@
 
     header {
       border-bottom: 1px solid #222;
-      background: #0a0a0a;
+      background: #090909;
     }
 
     .header {
@@ -51,7 +53,7 @@
     }
 
     .logo {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 900;
     }
 
@@ -60,20 +62,19 @@
       font-weight: 400;
     }
 
-    .logout {
+    #logoutButton {
       display: none;
       background: #151515;
-      color: #fff;
       border: 1px solid #333;
-      padding: 10px 15px;
+      color: #fff;
       border-radius: 9px;
+      padding: 10px 15px;
     }
 
     main {
-      width: 100%;
       max-width: 1100px;
       margin: auto;
-      padding: 35px 20px;
+      padding: 30px 20px 60px;
     }
 
     .login,
@@ -99,7 +100,7 @@
     }
 
     h2 {
-      font-size: 24px;
+      font-size: 23px;
       margin: 40px 0 18px;
     }
 
@@ -117,8 +118,8 @@
     }
 
     input,
-    select,
-    textarea {
+    textarea,
+    select {
       width: 100%;
       background: #080808;
       border: 1px solid #333;
@@ -130,8 +131,8 @@
     }
 
     input:focus,
-    select:focus,
-    textarea:focus {
+    textarea:focus,
+    select:focus {
       border-color: #777;
     }
 
@@ -158,17 +159,27 @@
     .status {
       margin-top: 15px;
       padding: 13px;
+      border-radius: 9px;
       background: #171717;
       border: 1px solid #292929;
-      border-radius: 9px;
       color: #aaa;
       line-height: 1.5;
       word-break: break-word;
     }
 
+    .success {
+      color: #9cffb0;
+      border-color: #24482d;
+    }
+
+    .error {
+      color: #ff9b9b;
+      border-color: #512626;
+    }
+
     .preview {
       width: 100%;
-      max-height: 400px;
+      max-height: 450px;
       object-fit: contain;
       background: #050505;
       border-radius: 12px;
@@ -227,10 +238,10 @@
     }
 
     .wall img {
-      display: block;
       width: 100%;
       aspect-ratio: 3 / 4;
       object-fit: cover;
+      display: block;
     }
 
     .wall-info {
@@ -271,18 +282,10 @@
     }
 
     .progress-bar {
-      height: 100%;
       width: 0%;
+      height: 100%;
       background: #fff;
       transition: width .2s;
-    }
-
-    .success {
-      color: #9cffb0;
-    }
-
-    .error {
-      color: #ff9999;
     }
 
     @media (max-width: 800px) {
@@ -293,7 +296,7 @@
 
     @media (max-width: 600px) {
       main {
-        padding: 20px 15px;
+        padding: 20px 15px 50px;
       }
 
       .login,
@@ -321,10 +324,7 @@
       RXTRO <span>WALLS</span>
     </div>
 
-    <button
-      id="logoutButton"
-      class="logout"
-    >
+    <button id="logoutButton">
       Logout
     </button>
 
@@ -336,10 +336,7 @@
 
   <!-- LOGIN -->
 
-  <section
-    id="loginBox"
-    class="login"
-  >
+  <section id="loginBox" class="login">
 
     <h1>
       Owner Login
@@ -358,8 +355,8 @@
       <input
         id="email"
         type="email"
-        autocomplete="email"
         placeholder="Your Gmail"
+        autocomplete="email"
         required
       >
 
@@ -370,8 +367,8 @@
       <input
         id="password"
         type="password"
-        autocomplete="current-password"
         placeholder="Your password"
+        autocomplete="current-password"
         required
       >
 
@@ -385,11 +382,8 @@
 
     </form>
 
-    <div
-      id="loginStatus"
-      class="status"
-    >
-      Enter your owner email and password.
+    <div id="loginStatus" class="status">
+      Checking configuration...
     </div>
 
   </section>
@@ -397,10 +391,7 @@
 
   <!-- DASHBOARD -->
 
-  <section
-    id="dashboard"
-    class="dashboard"
-  >
+  <section id="dashboard" class="dashboard">
 
     <h1>
       RXTRO Walls Dashboard
@@ -452,7 +443,7 @@
       <img
         id="preview"
         class="preview"
-        alt="Preview"
+        alt="Wallpaper preview"
       >
 
 
@@ -475,33 +466,13 @@
 
       <select id="category">
 
-        <option value="Cars">
-          Cars
-        </option>
-
-        <option value="Football">
-          Football
-        </option>
-
-        <option value="Basketball">
-          Basketball
-        </option>
-
-        <option value="Gaming">
-          Gaming
-        </option>
-
-        <option value="Aesthetic">
-          Aesthetic
-        </option>
-
-        <option value="Dark">
-          Dark
-        </option>
-
-        <option value="AI">
-          AI
-        </option>
+        <option value="Cars">Cars</option>
+        <option value="Football">Football</option>
+        <option value="Basketball">Basketball</option>
+        <option value="Gaming">Gaming</option>
+        <option value="Aesthetic">Aesthetic</option>
+        <option value="Dark">Dark</option>
+        <option value="AI">AI</option>
 
       </select>
 
@@ -512,17 +483,9 @@
 
       <select id="device">
 
-        <option value="iPhone">
-          iPhone
-        </option>
-
-        <option value="Android">
-          Android
-        </option>
-
-        <option value="Desktop">
-          Desktop
-        </option>
+        <option value="iPhone">iPhone</option>
+        <option value="Android">Android</option>
+        <option value="Desktop">Desktop</option>
 
       </select>
 
@@ -559,10 +522,7 @@
       </button>
 
 
-      <div
-        id="progress"
-        class="progress"
-      >
+      <div id="progress" class="progress">
 
         <div
           id="progressBar"
@@ -574,10 +534,7 @@
     </form>
 
 
-    <div
-      id="uploadStatus"
-      class="status"
-    >
+    <div id="uploadStatus" class="status">
       Ready.
     </div>
 
@@ -599,46 +556,30 @@
 
 <script>
 
-  /*
-   * SUPABASE
-   */
-
   let client = null;
 
 
   const loginBox =
-    document.getElementById(
-      "loginBox"
-    );
+    document.getElementById("loginBox");
 
   const dashboard =
-    document.getElementById(
-      "dashboard"
-    );
+    document.getElementById("dashboard");
 
   const loginForm =
-    document.getElementById(
-      "loginForm"
-    );
+    document.getElementById("loginForm");
 
   const loginButton =
-    document.getElementById(
-      "loginButton"
-    );
+    document.getElementById("loginButton");
 
   const loginStatus =
-    document.getElementById(
-      "loginStatus"
-    );
+    document.getElementById("loginStatus");
 
   const logoutButton =
-    document.getElementById(
-      "logoutButton"
-    );
+    document.getElementById("logoutButton");
 
 
   /*
-   * INITIALIZE SUPABASE
+   * CONFIGURATION
    */
 
   function initializeSupabase() {
@@ -648,42 +589,39 @@
       if (
         typeof supabase === "undefined"
       ) {
-
         throw new Error(
           "Supabase library did not load."
         );
-
       }
 
 
       if (
-        typeof SUPABASE_URL === "undefined" ||
-        typeof SUPABASE_KEY === "undefined"
+        !window.RXTRO_CONFIG
       ) {
-
         throw new Error(
-          "config.js is missing or incorrectly configured."
+          "config.js was not loaded. Make sure config.js is in the root of the GitHub repository."
         );
-
       }
 
 
-      if (
-        !SUPABASE_URL ||
-        !SUPABASE_KEY
-      ) {
+      const url =
+        window.RXTRO_CONFIG.SUPABASE_URL;
 
+      const key =
+        window.RXTRO_CONFIG.SUPABASE_KEY;
+
+
+      if (!url || !key) {
         throw new Error(
-          "Supabase URL or key is empty."
+          "SUPABASE_URL or SUPABASE_KEY is missing from config.js."
         );
-
       }
 
 
       client =
         supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_KEY
+          url,
+          key
         );
 
 
@@ -694,11 +632,16 @@
         "status";
 
 
+      checkSession();
+
+
     } catch (error) {
 
       console.error(
+        "CONFIG ERROR:",
         error
       );
+
 
       loginStatus.textContent =
         "Configuration error: "
@@ -726,17 +669,10 @@
       event.preventDefault();
 
 
-      loginStatus.textContent =
-        "Login button works. Connecting to Supabase...";
-
-      loginStatus.className =
-        "status";
-
-
       if (!client) {
 
         loginStatus.textContent =
-          "Supabase is not initialized.";
+          "Supabase is not connected.";
 
         loginStatus.className =
           "status error";
@@ -748,32 +684,22 @@
 
       const email =
         document
-          .getElementById(
-            "email"
-          )
+          .getElementById("email")
           .value
           .trim();
 
 
       const password =
         document
-          .getElementById(
-            "password"
-          )
+          .getElementById("password")
           .value;
 
 
-      if (!email || !password) {
+      loginStatus.textContent =
+        "Signing in...";
 
-        loginStatus.textContent =
-          "Enter both email and password.";
-
-        loginStatus.className =
-          "status error";
-
-        return;
-
-      }
+      loginStatus.className =
+        "status";
 
 
       loginButton.disabled =
@@ -785,37 +711,33 @@
 
       try {
 
-        const result =
+        const {
+          data,
+          error
+        } =
           await client.auth.signInWithPassword({
-
             email: email,
-
             password: password
-
           });
 
 
-        if (result.error) {
-
-          throw result.error;
-
+        if (error) {
+          throw error;
         }
 
 
         if (
-          !result.data ||
-          !result.data.session
+          !data ||
+          !data.session
         ) {
-
           throw new Error(
-            "Login completed but no session was returned."
+            "No login session was returned."
           );
-
         }
 
 
         loginStatus.textContent =
-          "✓ Login successful!";
+          "✓ Login successful.";
 
         loginStatus.className =
           "status success";
@@ -836,9 +758,8 @@
           "Login error: "
           + (
             error.message ||
-            "Unknown error"
+            "Unknown error."
           );
-
 
         loginStatus.className =
           "status error";
@@ -857,61 +778,7 @@
 
 
   /*
-   * SHOW DASHBOARD
-   */
-
-  function showDashboard() {
-
-    loginBox.style.display =
-      "none";
-
-    dashboard.style.display =
-      "block";
-
-    logoutButton.style.display =
-      "block";
-
-
-    loadWallpapers();
-
-  }
-
-
-  /*
-   * LOGOUT
-   */
-
-  logoutButton.addEventListener(
-    "click",
-    async function() {
-
-      if (!client) {
-        return;
-      }
-
-
-      await client.auth.signOut();
-
-
-      dashboard.style.display =
-        "none";
-
-      loginBox.style.display =
-        "block";
-
-      logoutButton.style.display =
-        "none";
-
-
-      loginStatus.textContent =
-        "Logged out.";
-
-    }
-  );
-
-
-  /*
-   * CHECK EXISTING SESSION
+   * CHECK SESSION
    */
 
   async function checkSession() {
@@ -947,9 +814,7 @@
 
     } catch (error) {
 
-      console.error(
-        error
-      );
+      console.error(error);
 
     }
 
@@ -957,20 +822,78 @@
 
 
   /*
+   * SHOW DASHBOARD
+   */
+
+  function showDashboard() {
+
+    loginBox.style.display =
+      "none";
+
+    dashboard.style.display =
+      "block";
+
+    logoutButton.style.display =
+      "block";
+
+
+    loadWallpapers();
+
+  }
+
+
+  /*
+   * LOGOUT
+   */
+
+  logoutButton.addEventListener(
+    "click",
+    async function() {
+
+      try {
+
+        if (client) {
+          await client.auth.signOut();
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+
+
+      dashboard.style.display =
+        "none";
+
+      loginBox.style.display =
+        "block";
+
+      logoutButton.style.display =
+        "none";
+
+      loginStatus.textContent =
+        "Logged out.";
+
+      loginStatus.className =
+        "status";
+
+    }
+  );
+
+
+  /*
    * IMAGE PREVIEW
    */
 
   document
-    .getElementById(
-      "image"
-    )
+    .getElementById("image")
     .addEventListener(
       "change",
       function(event) {
 
         const file =
           event.target.files[0];
-
 
         const preview =
           document.getElementById(
@@ -996,13 +919,11 @@
 
 
         if (
-          !allowed.includes(
-            file.type
-          )
+          !allowed.includes(file.type)
         ) {
 
           alert(
-            "Please select a JPG, PNG or WEBP image."
+            "Please select JPG, PNG or WEBP."
           );
 
           event.target.value =
@@ -1037,10 +958,7 @@
 
 
         preview.src =
-          URL.createObjectURL(
-            file
-          );
-
+          URL.createObjectURL(file);
 
         preview.style.display =
           "block";
@@ -1054,9 +972,7 @@
    */
 
   document
-    .getElementById(
-      "uploadForm"
-    )
+    .getElementById("uploadForm")
     .addEventListener(
       "submit",
       async function(event) {
@@ -1069,18 +985,15 @@
             "uploadStatus"
           );
 
-
         const publishButton =
           document.getElementById(
             "publishButton"
           );
 
-
         const progress =
           document.getElementById(
             "progress"
           );
-
 
         const progressBar =
           document.getElementById(
@@ -1088,21 +1001,24 @@
           );
 
 
-        uploadStatus.textContent =
-          "Checking session...";
-
-
         try {
 
+          uploadStatus.textContent =
+            "Checking login...";
+
+          uploadStatus.className =
+            "status";
+
+
           const {
-            data
+            data: sessionData
           } =
             await client.auth.getSession();
 
 
           if (
-            !data ||
-            !data.session
+            !sessionData ||
+            !sessionData.session
           ) {
 
             throw new Error(
@@ -1114,69 +1030,53 @@
 
           const file =
             document
-              .getElementById(
-                "image"
-              )
+              .getElementById("image")
               .files[0];
 
 
           const title =
             document
-              .getElementById(
-                "title"
-              )
+              .getElementById("title")
               .value
               .trim();
 
 
           const category =
             document
-              .getElementById(
-                "category"
-              )
+              .getElementById("category")
               .value;
 
 
           const device =
             document
-              .getElementById(
-                "device"
-              )
+              .getElementById("device")
               .value;
 
 
           const description =
             document
-              .getElementById(
-                "description"
-              )
+              .getElementById("description")
               .value
               .trim();
 
 
           const premium =
             document
-              .getElementById(
-                "premium"
-              )
+              .getElementById("premium")
               .checked;
 
 
           if (!file) {
-
             throw new Error(
               "Please select an image."
             );
-
           }
 
 
           if (!title) {
-
             throw new Error(
               "Please enter a title."
             );
-
           }
 
 
@@ -1191,15 +1091,15 @@
             "block";
 
           progressBar.style.width =
-            "15%";
+            "10%";
 
 
           uploadStatus.textContent =
-            "Uploading image to Storage...";
+            "Uploading image...";
 
 
           /*
-           * FILE PATH
+           * UNIQUE FILE NAME
            */
 
           const extension =
@@ -1209,7 +1109,7 @@
               .toLowerCase();
 
 
-          const fileName =
+          const uniqueName =
             crypto.randomUUID()
             + "."
             + extension;
@@ -1217,16 +1117,15 @@
 
           const storagePath =
             "wallpapers/"
-            + fileName;
+            + uniqueName;
 
 
           /*
-           * STORAGE UPLOAD
+           * STORAGE
            */
 
           const {
-            error:
-              storageError
+            error: storageError
           } =
             await client
               .storage
@@ -1237,10 +1136,8 @@
                 {
                   contentType:
                     file.type,
-
                   cacheControl:
                     "3600",
-
                   upsert:
                     false
                 }
@@ -1250,7 +1147,7 @@
           if (storageError) {
 
             throw new Error(
-              "Storage: "
+              "Storage error: "
               + storageError.message
             );
 
@@ -1258,11 +1155,11 @@
 
 
           progressBar.style.width =
-            "60%";
+            "55%";
 
 
           uploadStatus.textContent =
-            "Image uploaded. Saving information...";
+            "Image uploaded. Saving wallpaper...";
 
 
           /*
@@ -1270,8 +1167,7 @@
            */
 
           const {
-            data:
-              publicData
+            data: publicData
           } =
             client
               .storage
@@ -1281,25 +1177,26 @@
               );
 
 
-          if (
-            !publicData ||
-            !publicData.publicUrl
-          ) {
+          const imageUrl =
+            publicData &&
+            publicData.publicUrl;
+
+
+          if (!imageUrl) {
 
             throw new Error(
-              "Could not create public image URL."
+              "Could not generate image URL."
             );
 
           }
 
 
           /*
-           * DATABASE INSERT
+           * DATABASE
            */
 
           const {
-            error:
-              databaseError
+            error: databaseError
           } =
             await client
               .from("wallpapers")
@@ -1318,7 +1215,7 @@
                   description,
 
                 image_url:
-                  publicData.publicUrl,
+                  imageUrl,
 
                 storage_path:
                   storagePath,
@@ -1337,10 +1234,6 @@
 
           if (databaseError) {
 
-            /*
-             * CLEAN UP STORAGE
-             */
-
             await client
               .storage
               .from("wallpapers")
@@ -1350,7 +1243,7 @@
 
 
             throw new Error(
-              "Database: "
+              "Database error: "
               + databaseError.message
             );
 
@@ -1364,22 +1257,17 @@
           uploadStatus.textContent =
             "✓ Wallpaper published successfully!";
 
-
           uploadStatus.className =
             "status success";
 
 
           document
-            .getElementById(
-              "uploadForm"
-            )
+            .getElementById("uploadForm")
             .reset();
 
 
           document
-            .getElementById(
-              "preview"
-            )
+            .getElementById("preview")
             .style.display =
             "none";
 
@@ -1399,9 +1287,8 @@
             "Upload error: "
             + (
               error.message ||
-              "Unknown error"
+              "Unknown error."
             );
-
 
           uploadStatus.className =
             "status error";
@@ -1414,6 +1301,7 @@
 
           publishButton.textContent =
             "Publish Wallpaper";
+
 
           setTimeout(
             function() {
@@ -1447,7 +1335,7 @@
 
 
     list.innerHTML =
-      "<p style='color:#777'>Loading...</p>";
+      "<p style='color:#777'>Loading wallpapers...</p>";
 
 
     try {
@@ -1468,9 +1356,7 @@
 
 
       if (error) {
-
         throw error;
-
       }
 
 
@@ -1478,99 +1364,160 @@
         "";
 
 
-      let downloads =
+      let totalDownloads =
         0;
 
-
-      let views =
+      let totalViews =
         0;
 
 
       (data || []).forEach(
         wallpaper => {
 
-          downloads +=
+          totalDownloads +=
             Number(
               wallpaper.downloads || 0
             );
 
-
-          views +=
+          totalViews +=
             Number(
               wallpaper.views || 0
             );
 
 
-          const article =
+          const card =
             document.createElement(
               "article"
             );
 
 
-          article.className =
+          card.className =
             "wall";
 
 
-          article.innerHTML = `
-
-            <img
-              src="${escapeHtml(wallpaper.image_url)}"
-              alt="${escapeHtml(wallpaper.title)}"
-            >
-
-            <div class="wall-info">
-
-              <strong>
-                ${escapeHtml(wallpaper.title)}
-              </strong>
-
-              <small>
-                ${escapeHtml(wallpaper.category)}
-                ·
-                ${escapeHtml(wallpaper.device)}
-              </small>
-
-              <small>
-                ${Number(wallpaper.downloads || 0)}
-                downloads
-              </small>
-
-              <small>
-                ${Number(wallpaper.views || 0)}
-                views
-              </small>
-
-              <button
-                class="delete"
-                type="button"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          `;
-
-
-          article
-            .querySelector(
-              ".delete"
-            )
-            .addEventListener(
-              "click",
-              function() {
-
-                deleteWallpaper(
-                  wallpaper
-                );
-
-              }
+          const image =
+            document.createElement(
+              "img"
             );
 
 
-          list.appendChild(
-            article
+          image.src =
+            wallpaper.image_url;
+
+          image.alt =
+            wallpaper.title ||
+            "Wallpaper";
+
+          image.loading =
+            "lazy";
+
+
+          const info =
+            document.createElement(
+              "div"
+            );
+
+
+          info.className =
+            "wall-info";
+
+
+          const title =
+            document.createElement(
+              "strong"
+            );
+
+
+          title.textContent =
+            wallpaper.title ||
+            "Untitled";
+
+
+          const meta =
+            document.createElement(
+              "small"
+            );
+
+
+          meta.textContent =
+            (
+              wallpaper.category ||
+              "Wallpaper"
+            )
+            +
+            " · "
+            +
+            (
+              wallpaper.device ||
+              "All"
+            );
+
+
+          const downloads =
+            document.createElement(
+              "small"
+            );
+
+
+          downloads.textContent =
+            Number(
+              wallpaper.downloads || 0
+            )
+            +
+            " downloads";
+
+
+          const views =
+            document.createElement(
+              "small"
+            );
+
+
+          views.textContent =
+            Number(
+              wallpaper.views || 0
+            )
+            +
+            " views";
+
+
+          const deleteButton =
+            document.createElement(
+              "button"
+            );
+
+
+          deleteButton.className =
+            "delete";
+
+          deleteButton.textContent =
+            "Delete";
+
+
+          deleteButton.addEventListener(
+            "click",
+            function() {
+
+              deleteWallpaper(
+                wallpaper
+              );
+
+            }
           );
+
+
+          info.appendChild(title);
+          info.appendChild(meta);
+          info.appendChild(downloads);
+          info.appendChild(views);
+          info.appendChild(deleteButton);
+
+
+          card.appendChild(image);
+          card.appendChild(info);
+
+
+          list.appendChild(card);
 
         }
       );
@@ -1587,38 +1534,47 @@
       }
 
 
-      document.getElementById(
-        "totalWallpapers"
-      ).textContent =
+      document
+        .getElementById(
+          "totalWallpapers"
+        )
+        .textContent =
         data
           ? data.length
           : 0;
 
 
-      document.getElementById(
-        "totalDownloads"
-      ).textContent =
-        downloads;
+      document
+        .getElementById(
+          "totalDownloads"
+        )
+        .textContent =
+        totalDownloads;
 
 
-      document.getElementById(
-        "totalViews"
-      ).textContent =
-        views;
+      document
+        .getElementById(
+          "totalViews"
+        )
+        .textContent =
+        totalViews;
 
 
     } catch (error) {
 
       console.error(
+        "LOAD ERROR:",
         error
       );
 
 
       list.innerHTML =
-        `<p class="error">
-          Could not load wallpapers:
-          ${escapeHtml(error.message)}
-        </p>`;
+        `
+          <p class="error">
+            Could not load wallpapers:
+            ${escapeHtml(error.message)}
+          </p>
+        `;
 
     }
 
@@ -1626,7 +1582,7 @@
 
 
   /*
-   * DELETE
+   * DELETE WALLPAPER
    */
 
   async function deleteWallpaper(
@@ -1647,8 +1603,7 @@
     try {
 
       const {
-        error:
-          databaseError
+        error: databaseError
       } =
         await client
           .from("wallpapers")
@@ -1660,9 +1615,7 @@
 
 
       if (databaseError) {
-
         throw databaseError;
-
       }
 
 
@@ -1671,8 +1624,7 @@
       ) {
 
         const {
-          error:
-            storageError
+          error: storageError
         } =
           await client
             .storage
@@ -1685,6 +1637,7 @@
         if (storageError) {
 
           console.warn(
+            "Storage delete warning:",
             storageError
           );
 
@@ -1725,13 +1678,9 @@
         return {
 
           "&": "&amp;",
-
           "<": "&lt;",
-
           ">": "&gt;",
-
           '"': "&quot;",
-
           "'": "&#039;"
 
         }[character];
@@ -1747,8 +1696,6 @@
    */
 
   initializeSupabase();
-
-  checkSession();
 
 </script>
 
