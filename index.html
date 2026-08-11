@@ -1,1 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RXTRO Walls</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#070707;
+  color:#fff;
+}
+
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(7,7,7,.9);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid #222;
+}
+
+.nav{
+  max-width:1200px;
+  margin:auto;
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.logo span{
+  color:#777;
+  font-weight:400;
+}
+
+.search{
+  flex:1;
+  max-width:650px;
+  margin:auto;
+}
+
+.search input{
+  width:100%;
+  background:#111;
+  border:1px solid #292929;
+  color:white;
+  padding:13px 18px;
+  border-radius:50px;
+  outline:none;
+}
+
+.hero{
+  max-width:1200px;
+  margin:auto;
+  padding:75px 20px 45px;
+}
+
+.eyebrow{
+  color:#777;
+  font-size:12px;
+  letter-spacing:3px;
+}
+
+.hero h1{
+  font-size:clamp(50px,8vw,85px);
+  line-height:.9;
+  letter-spacing:-5px;
+  margin-top:15px;
+}
+
+.hero p{
+  color:#888;
+  max-width:600px;
+  line-height:1.6;
+  margin-top:25px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
+
+.categories{
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding-bottom:20px;
+}
+
+.category{
+  background:#111;
+  border:1px solid #292929;
+  color:#aaa;
+  padding:10px 15px;
+  border-radius:50px;
+  white-space:nowrap;
+}
+
+.category.active{
+  background:white;
+  color:black;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  margin:20px 0;
+}
+
+.section-head h2{
+  font-size:28px;
+}
+
+.count{
+  color:#777;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+
+.card{
+  position:relative;
+  background:#111;
+  border:1px solid #222;
+  border-radius:17px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:#444;
+}
+
+.card img{
+  width:100%;
+  display:block;
+  aspect-ratio:3/4;
+  object-fit:cover;
+}
+
+.info{
+  padding:13px;
+}
+
+.info strong{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.info small{
+  display:block;
+  color:#777;
+  margin-top:5px;
+}
+
+.premium{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:white;
+  color:black;
+  padding:6px 9px;
+  border-radius:7px;
+  font-size:10px;
+  font-weight:900;
+}
+
+.empty{
+  display:none;
+  padding:60px;
+  text-align:center;
+  color:#777;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  background:rgba(0,0,0,.92);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.close{
+  position:fixed;
+  right:20px;
+  top:20px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:1px solid #333;
+  background:#111;
+  color:white;
+  font-size:22px;
+}
+
+.modal-box{
+  width:min(1000px,100%);
+  max-height:90vh;
+  overflow:hidden;
+  background:#111;
+  border:1px solid #292929;
+  border-radius:20px;
+  display:grid;
+  grid-template-columns:1fr 320px;
+}
+
+.preview{
+  background:#050505;
+  min-height:600px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.preview img{
+  max-width:100%;
+  max-height:85vh;
+  object-fit:contain;
+}
+
+.details{
+  padding:30px;
+  overflow:auto;
+}
+
+.details h2{
+  font-size:28px;
+  margin-bottom:12px;
+}
+
+.details p{
+  color:#888;
+  line-height:1.6;
+  margin-bottom:25px;
+}
+
+.tag{
+  display:inline-block;
+  background:#191919;
+  color:#aaa;
+  border:1px solid #292929;
+  padding:7px 10px;
+  border-radius:8px;
+  margin:0 5px 5px 0;
+  font-size:12px;
+}
+
+.download{
+  width:100%;
+  background:white;
+  color:black;
+  border:0;
+  padding:15px;
+  border-radius:10px;
+  font-weight:900;
+  margin-top:20px;
+}
+
+footer{
+  margin-top:80px;
+  border-top:1px solid #222;
+  padding:35px 20px;
+  color:#777;
+}
+
+@media(max-width:950px){
+  .grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .modal-box{
+    grid-template-columns:1fr;
+    max-height:92vh;
+    overflow:auto;
+  }
+
+  .preview{
+    min-height:45vh;
+  }
+}
+
+@media(max-width:600px){
+  .hero{
+    padding:50px 15px 30px;
+  }
+
+  .hero h1{
+    font-size:52px;
+  }
+
+  .container{
+    padding:15px;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .modal{
+    padding:10px;
+  }
+
+  .details{
+    padding:20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+
+    <a href="#" class="logo">
+      RXTRO <span>WALLS</span>
+    </a>
+
+    <div class="search">
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="Search wallpapers..."
+      >
+    </div>
+
+  </div>
+</header>
+
+
+<section class="hero">
+
+  <div class="eyebrow">
+    RXTRO WALLS
+  </div>
+
+  <h1>
+    Your screen.<br>
+    Your style.
+  </h1>
+
+  <p>
+    Discover premium wallpapers for iPhone,
+    Android and desktop.
+  </p>
+
+</section>
+
+
+<main class="container">
+
+  <div
+    class="categories"
+    id="categories"
+  ></div>
+
+  <div class="section-head">
+
+    <h2 id="sectionTitle">
+      Trending Wallpapers
+    </h2>
+
+    <span
+      class="count"
+      id="resultCount"
+    ></span>
+
+  </div>
+
+  <section
+    class="grid"
+    id="wallGrid"
+  ></section>
+
+  <div
+    class="empty"
+    id="emptyState"
+  >
+    No wallpapers found.
+  </div>
+
+</main>
+
+
+<footer>
+  © <span id="year"></span> RXTRO Walls
+</footer>
+
+
+<div
+  class="modal"
+  id="modal"
+>
+
+  <button
+    class="close"
+    onclick="closeModal()"
+  >
+    ×
+  </button>
+
+  <div class="modal-box">
+
+    <div class="preview">
+
+      <img
+        id="modalImage"
+        src=""
+        alt=""
+      >
+
+    </div>
+
+    <div class="details">
+
+      <h2 id="modalTitle"></h2>
+
+      <p id="modalDescription"></p>
+
+      <div id="modalTags"></div>
+
+      <button
+        class="download"
+        id="downloadButton"
+      >
+        ↓ Download Wallpaper
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const client =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+let wallpapers = [];
+
+let activeCategory = "All";
+
+let searchTerm = "";
+
+const categories = [
+  "All",
+  "Cars",
+  "Football",
+  "Basketball",
+  "Gaming",
+  "Aesthetic",
+  "Dark",
+  "AI",
+  "iPhone",
+  "Android",
+  "Desktop"
+];
+
+const grid =
+  document.getElementById(
+    "wallGrid"
+  );
+
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+
+async function loadWallpapers(){
+
+  const {
+    data,
+    error
+  } =
+    await client
+      .from("wallpapers")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+  if(error){
+
+    console.error(error);
+
+    grid.innerHTML =
+      "<p style='color:#777'>Unable to load wallpapers.</p>";
+
+    return;
+  }
+
+  wallpapers =
+    data || [];
+
+  renderCategories();
+
+  render();
+
+}
+
+
+function renderCategories(){
+
+  document.getElementById(
+    "categories"
+  ).innerHTML =
+
+    categories.map(
+      category => `
+
+        <button
+          class="category ${
+            category === activeCategory
+            ? "active"
+            : ""
+          }"
+          onclick="setCategory('${category}')"
+        >
+          ${category}
+        </button>
+
+      `
+    ).join("");
+
+}
+
+
+function setCategory(category){
+
+  activeCategory =
+    category;
+
+  renderCategories();
+
+  render();
+
+}
+
+
+function render(){
+
+  const list =
+    wallpapers.filter(w => {
+
+      const categoryMatch =
+        activeCategory === "All" ||
+        w.category === activeCategory ||
+        w.device === activeCategory;
+
+      const text =
+        `${w.title} ${w.category} ${w.device} ${w.description || ""}`
+        .toLowerCase();
+
+      const searchMatch =
+        text.includes(
+          searchTerm.toLowerCase()
+        );
+
+      return (
+        categoryMatch &&
+        searchMatch
+      );
+
+    });
+
+
+  grid.innerHTML = "";
+
+
+  list.forEach(w => {
+
+    const card =
+      document.createElement(
+        "article"
+      );
+
+    card.className =
+      "card";
+
+
+    card.innerHTML = `
+
+      ${
+        w.is_premium
+        ? `<div class="premium">PREMIUM</div>`
+        : ""
+      }
+
+      <img
+        src="${escapeHtml(w.image_url)}"
+        alt="${escapeHtml(w.title)}"
+        loading="lazy"
+      >
+
+      <div class="info">
+
+        <strong>
+          ${escapeHtml(w.title)}
+        </strong>
+
+        <small>
+          ${escapeHtml(w.category)}
+          ·
+          ${escapeHtml(w.device)}
+        </small>
+
+      </div>
+
+    `;
+
+
+    card.onclick =
+      () => openModal(w);
+
+
+    grid.appendChild(
+      card
+    );
+
+  });
+
+
+  document.getElementById(
+    "emptyState"
+  ).style.display =
+    list.length
+    ? "none"
+    : "block";
+
+
+  document.getElementById(
+    "resultCount"
+  ).textContent =
+    `${list.length} wallpapers`;
+
+}
+
+
+function openModal(w){
+
+  document.getElementById(
+    "modalImage"
+  ).src =
+    w.image_url;
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent =
+    w.title;
+
+  document.getElementById(
+    "modalDescription"
+  ).textContent =
+    w.description ||
+    "RXTRO Walls wallpaper.";
+
+
+  document.getElementById(
+    "modalTags"
+  ).innerHTML = `
+
+    <span class="tag">
+      ${escapeHtml(w.category)}
+    </span>
+
+    <span class="tag">
+      ${escapeHtml(w.device)}
+    </span>
+
+  `;
+
+
+  document.getElementById(
+    "downloadButton"
+  ).onclick =
+    () => downloadWallpaper(w);
+
+
+  document.getElementById(
+    "modal"
+  ).classList.add(
+    "active"
+  );
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function closeModal(){
+
+  document.getElementById(
+    "modal"
+  ).classList.remove(
+    "active"
+  );
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+async function downloadWallpaper(w){
+
+  const button =
+    document.getElementById(
+      "downloadButton"
+    );
+
+  button.textContent =
+    "Preparing download...";
+
+
+  try{
+
+    const response =
+      await fetch(
+        w.image_url
+      );
+
+    const blob =
+      await response.blob();
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+    link.href =
+      url;
+
+    link.download =
+      `${slugify(w.title)}-RXTRO-Walls`;
+
+    document.body.appendChild(
+      link
+    );
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(
+      url
+    );
+
+
+    await client.rpc(
+      "increment_downloads",
+      {
+        wallpaper_id:w.id
+      }
+    );
+
+
+  }catch(error){
+
+    window.open(
+      w.image_url,
+      "_blank"
+    );
+
+  }
+
+
+  button.textContent =
+    "↓ Download Wallpaper";
+
+}
+
+
+searchInput.addEventListener(
+  "input",
+  event => {
+
+    searchTerm =
+      event.target.value.trim();
+
+    render();
+
+  }
+);
+
+
+function slugify(text){
+
+  return text
+    .toLowerCase()
+    .replace(
+      /[^a-z0-9]+/g,
+      "-"
+    );
+
+}
+
+
+function escapeHtml(text){
+
+  return String(text)
+    .replace(
+      /[&<>"']/g,
+      character => ({
+
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+
+      }[character])
+    );
+
+}
+
+
+document.getElementById(
+  "year"
+).textContent =
+  new Date().getFullYear();
+
+
+loadWallpapers();
+
+</script>
+
+</body>
+</html>
