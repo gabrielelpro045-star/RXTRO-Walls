@@ -1,20 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="robots" content="noindex,nofollow">
 
-  <meta
-    name="robots"
-    content="noindex,nofollow"
-  >
-
-  <title>RXTRO Walls — Owner Dashboard</title>
+  <title>RXTRO Walls — Admin</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
@@ -27,10 +19,10 @@
     }
 
     body {
-      font-family: Inter, Arial, Helvetica, sans-serif;
+      min-height: 100vh;
       background: #070707;
       color: #fff;
-      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     button,
@@ -65,24 +57,26 @@
 
     .logo span {
       color: #777;
-      font-weight: 500;
+      font-weight: 400;
+    }
+
+    .logout {
+      display: none;
+      background: #151515;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 10px 15px;
+      border-radius: 9px;
     }
 
     main {
+      width: 100%;
       max-width: 1100px;
       margin: auto;
-      padding: 40px 20px;
+      padding: 35px 20px;
     }
 
-    .login {
-      max-width: 470px;
-      margin: 60px auto;
-      background: #111;
-      border: 1px solid #292929;
-      border-radius: 20px;
-      padding: 30px;
-    }
-
+    .login,
     .dashboard {
       background: #111;
       border: 1px solid #292929;
@@ -90,15 +84,23 @@
       padding: 30px;
     }
 
+    .login {
+      max-width: 450px;
+      margin: 60px auto;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
     h1 {
       font-size: 30px;
-      letter-spacing: -1px;
       margin-bottom: 8px;
     }
 
     h2 {
-      margin-top: 45px;
-      margin-bottom: 15px;
+      font-size: 24px;
+      margin: 40px 0 18px;
     }
 
     .subtitle {
@@ -111,16 +113,16 @@
       display: block;
       color: #aaa;
       font-size: 13px;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
     }
 
     input,
-    textarea,
-    select {
+    select,
+    textarea {
       width: 100%;
       background: #080808;
-      color: #fff;
       border: 1px solid #333;
+      color: #fff;
       border-radius: 9px;
       padding: 13px;
       margin-bottom: 18px;
@@ -128,77 +130,63 @@
     }
 
     input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #666;
+    select:focus,
+    textarea:focus {
+      border-color: #777;
     }
 
     textarea {
-      min-height: 110px;
+      min-height: 100px;
       resize: vertical;
     }
 
-    button.primary {
+    .primary {
+      width: 100%;
       background: #fff;
       color: #000;
       border: 0;
-      padding: 13px 18px;
+      padding: 14px;
       border-radius: 9px;
       font-weight: 900;
     }
 
-    button.primary:hover {
-      opacity: .9;
-    }
-
-    button.secondary {
-      background: #171717;
-      color: #fff;
-      border: 1px solid #333;
-      padding: 11px 16px;
-      border-radius: 9px;
-    }
-
-    button.secondary:hover {
-      border-color: #666;
+    .primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
     }
 
     .status {
       margin-top: 15px;
-      background: #181818;
+      padding: 13px;
+      background: #171717;
       border: 1px solid #292929;
-      color: #999;
-      padding: 12px;
       border-radius: 9px;
-      line-height: 1.4;
-      min-height: 20px;
+      color: #aaa;
+      line-height: 1.5;
+      word-break: break-word;
     }
 
     .preview {
-      display: none;
       width: 100%;
-      max-height: 360px;
+      max-height: 400px;
       object-fit: contain;
       background: #050505;
       border-radius: 12px;
       margin-bottom: 20px;
+      display: none;
     }
 
     .checkbox {
       display: flex;
       align-items: center;
       gap: 9px;
-      margin-bottom: 20px;
       color: #aaa;
+      margin-bottom: 20px;
     }
 
     .checkbox input {
       width: auto;
       margin: 0;
-    }
-
-    .hidden {
-      display: none !important;
     }
 
     .stats {
@@ -222,7 +210,7 @@
     }
 
     .stat strong {
-      font-size: 25px;
+      font-size: 26px;
     }
 
     .wall-list {
@@ -233,7 +221,7 @@
 
     .wall {
       background: #151515;
-      border: 1px solid #252525;
+      border: 1px solid #292929;
       border-radius: 13px;
       overflow: hidden;
     }
@@ -263,27 +251,23 @@
     }
 
     .delete {
+      width: 100%;
       margin-top: 10px;
       background: #281010;
       color: #ff9999;
       border: 1px solid #4a2020;
-      padding: 8px 11px;
-      border-radius: 7px;
-      font-size: 12px;
-    }
-
-    .delete:hover {
-      background: #351414;
+      padding: 9px;
+      border-radius: 8px;
     }
 
     .progress {
+      display: none;
       width: 100%;
       height: 6px;
       background: #222;
       border-radius: 20px;
       overflow: hidden;
       margin-top: 15px;
-      display: none;
     }
 
     .progress-bar {
@@ -291,6 +275,14 @@
       width: 0%;
       background: #fff;
       transition: width .2s;
+    }
+
+    .success {
+      color: #9cffb0;
+    }
+
+    .error {
+      color: #ff9999;
     }
 
     @media (max-width: 800px) {
@@ -304,406 +296,632 @@
         padding: 20px 15px;
       }
 
+      .login,
       .dashboard {
         padding: 20px;
-      }
-
-      .wall-list {
-        grid-template-columns: repeat(2, 1fr);
       }
 
       .stats {
         grid-template-columns: 1fr;
       }
 
-      .header {
-        padding: 15px;
+      .wall-list {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
 </head>
 
-
 <body>
 
-  <header>
-    <div class="header">
+<header>
+  <div class="header">
 
-      <div class="logo">
-        RXTRO <span>WALLS</span>
-      </div>
+    <div class="logo">
+      RXTRO <span>WALLS</span>
+    </div>
+
+    <button
+      id="logoutButton"
+      class="logout"
+    >
+      Logout
+    </button>
+
+  </div>
+</header>
+
+
+<main>
+
+  <!-- LOGIN -->
+
+  <section
+    id="loginBox"
+    class="login"
+  >
+
+    <h1>
+      Owner Login
+    </h1>
+
+    <p class="subtitle">
+      Sign in to manage your RXTRO Walls wallpapers.
+    </p>
+
+    <form id="loginForm">
+
+      <label for="email">
+        Email
+      </label>
+
+      <input
+        id="email"
+        type="email"
+        autocomplete="email"
+        placeholder="Your Gmail"
+        required
+      >
+
+      <label for="password">
+        Password
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Your password"
+        required
+      >
 
       <button
-        class="secondary"
-        id="logoutButton"
+        id="loginButton"
+        class="primary"
+        type="submit"
       >
-        Logout
+        Login
       </button>
 
-    </div>
-  </header>
-
-
-  <main>
-
-    <!-- LOGIN -->
+    </form>
 
     <div
-      id="loginBox"
-      class="login"
+      id="loginStatus"
+      class="status"
     >
+      Enter your owner email and password.
+    </div>
 
-      <h1>
-        Owner Login
-      </h1>
-
-      <p class="subtitle">
-        Sign in to manage your RXTRO Walls library.
-      </p>
+  </section>
 
 
-      <form id="loginForm">
+  <!-- DASHBOARD -->
 
-        <label for="email">
-          Email
-        </label>
+  <section
+    id="dashboard"
+    class="dashboard"
+  >
+
+    <h1>
+      RXTRO Walls Dashboard
+    </h1>
+
+    <p class="subtitle">
+      Upload and manage your wallpapers.
+    </p>
+
+
+    <div class="stats">
+
+      <div class="stat">
+        <small>Wallpapers</small>
+        <strong id="totalWallpapers">0</strong>
+      </div>
+
+      <div class="stat">
+        <small>Downloads</small>
+        <strong id="totalDownloads">0</strong>
+      </div>
+
+      <div class="stat">
+        <small>Views</small>
+        <strong id="totalViews">0</strong>
+      </div>
+
+    </div>
+
+
+    <h2>
+      Upload Wallpaper
+    </h2>
+
+
+    <form id="uploadForm">
+
+      <label for="image">
+        Wallpaper Image
+      </label>
+
+      <input
+        id="image"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        required
+      >
+
+      <img
+        id="preview"
+        class="preview"
+        alt="Preview"
+      >
+
+
+      <label for="title">
+        Title
+      </label>
+
+      <input
+        id="title"
+        type="text"
+        placeholder="BMW M4 Night"
+        maxlength="100"
+        required
+      >
+
+
+      <label for="category">
+        Category
+      </label>
+
+      <select id="category">
+
+        <option value="Cars">
+          Cars
+        </option>
+
+        <option value="Football">
+          Football
+        </option>
+
+        <option value="Basketball">
+          Basketball
+        </option>
+
+        <option value="Gaming">
+          Gaming
+        </option>
+
+        <option value="Aesthetic">
+          Aesthetic
+        </option>
+
+        <option value="Dark">
+          Dark
+        </option>
+
+        <option value="AI">
+          AI
+        </option>
+
+      </select>
+
+
+      <label for="device">
+        Device
+      </label>
+
+      <select id="device">
+
+        <option value="iPhone">
+          iPhone
+        </option>
+
+        <option value="Android">
+          Android
+        </option>
+
+        <option value="Desktop">
+          Desktop
+        </option>
+
+      </select>
+
+
+      <label for="description">
+        Description
+      </label>
+
+      <textarea
+        id="description"
+        placeholder="Describe this wallpaper..."
+        maxlength="500"
+      ></textarea>
+
+
+      <label class="checkbox">
 
         <input
-          id="email"
-          type="email"
-          placeholder="Your owner email"
-          autocomplete="email"
-          required
+          id="premium"
+          type="checkbox"
         >
 
+        Premium wallpaper
 
-        <label for="password">
-          Password
-        </label>
-
-        <input
-          id="password"
-          type="password"
-          placeholder="Your password"
-          autocomplete="current-password"
-          required
-        >
+      </label>
 
 
-        <button
-          class="primary"
-          type="submit"
-        >
-          Login
-        </button>
-
-      </form>
+      <button
+        id="publishButton"
+        class="primary"
+        type="submit"
+      >
+        Publish Wallpaper
+      </button>
 
 
       <div
-        id="loginStatus"
-        class="status"
-      ></div>
+        id="progress"
+        class="progress"
+      >
 
-    </div>
-
-
-    <!-- DASHBOARD -->
-
-    <div
-      id="dashboard"
-      class="dashboard hidden"
-    >
-
-      <h1>
-        RXTRO Walls Dashboard
-      </h1>
-
-      <p class="subtitle">
-        Upload and manage your wallpapers.
-      </p>
-
-
-      <!-- STATS -->
-
-      <div class="stats">
-
-        <div class="stat">
-
-          <small>
-            Wallpapers
-          </small>
-
-          <strong id="totalWallpapers">
-            0
-          </strong>
-
-        </div>
-
-
-        <div class="stat">
-
-          <small>
-            Downloads
-          </small>
-
-          <strong id="totalDownloads">
-            0
-          </strong>
-
-        </div>
-
-
-        <div class="stat">
-
-          <small>
-            Views
-          </small>
-
-          <strong id="totalViews">
-            0
-          </strong>
-
-        </div>
+        <div
+          id="progressBar"
+          class="progress-bar"
+        ></div>
 
       </div>
 
-
-      <!-- UPLOAD -->
-
-      <h2>
-        Upload Wallpaper
-      </h2>
+    </form>
 
 
-      <form id="uploadForm">
-
-        <label for="image">
-          Wallpaper Image
-        </label>
-
-        <input
-          id="image"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          required
-        >
-
-
-        <img
-          id="preview"
-          class="preview"
-          alt="Wallpaper preview"
-        >
-
-
-        <label for="title">
-          Title
-        </label>
-
-        <input
-          id="title"
-          type="text"
-          placeholder="BMW M4 Night"
-          maxlength="100"
-          required
-        >
-
-
-        <label for="category">
-          Category
-        </label>
-
-        <select id="category">
-
-          <option value="Cars">
-            Cars
-          </option>
-
-          <option value="Football">
-            Football
-          </option>
-
-          <option value="Basketball">
-            Basketball
-          </option>
-
-          <option value="Gaming">
-            Gaming
-          </option>
-
-          <option value="Aesthetic">
-            Aesthetic
-          </option>
-
-          <option value="Dark">
-            Dark
-          </option>
-
-          <option value="AI">
-            AI
-          </option>
-
-        </select>
-
-
-        <label for="device">
-          Device
-        </label>
-
-        <select id="device">
-
-          <option value="iPhone">
-            iPhone
-          </option>
-
-          <option value="Android">
-            Android
-          </option>
-
-          <option value="Desktop">
-            Desktop
-          </option>
-
-        </select>
-
-
-        <label for="description">
-          Description
-        </label>
-
-        <textarea
-          id="description"
-          maxlength="500"
-          placeholder="A cinematic wallpaper for your phone."
-        ></textarea>
-
-
-        <label class="checkbox">
-
-          <input
-            id="premium"
-            type="checkbox"
-          >
-
-          Premium wallpaper
-
-        </label>
-
-
-        <button
-          class="primary"
-          type="submit"
-          id="publishButton"
-        >
-          Publish Wallpaper
-        </button>
-
-
-        <div
-          class="progress"
-          id="progress"
-        >
-          <div
-            class="progress-bar"
-            id="progressBar"
-          ></div>
-        </div>
-
-      </form>
-
-
-      <div
-        id="uploadStatus"
-        class="status"
-      ></div>
-
-
-      <!-- WALLPAPER LIST -->
-
-      <h2>
-        Your Wallpapers
-      </h2>
-
-
-      <div
-        id="wallList"
-        class="wall-list"
-      ></div>
-
+    <div
+      id="uploadStatus"
+      class="status"
+    >
+      Ready.
     </div>
 
-  </main>
+
+    <h2>
+      Your Wallpapers
+    </h2>
 
 
-  <script>
+    <div
+      id="wallList"
+      class="wall-list"
+    ></div>
 
-    const client =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+  </section>
+
+</main>
+
+
+<script>
+
+  /*
+   * SUPABASE
+   */
+
+  let client = null;
+
+
+  const loginBox =
+    document.getElementById(
+      "loginBox"
+    );
+
+  const dashboard =
+    document.getElementById(
+      "dashboard"
+    );
+
+  const loginForm =
+    document.getElementById(
+      "loginForm"
+    );
+
+  const loginButton =
+    document.getElementById(
+      "loginButton"
+    );
+
+  const loginStatus =
+    document.getElementById(
+      "loginStatus"
+    );
+
+  const logoutButton =
+    document.getElementById(
+      "logoutButton"
+    );
+
+
+  /*
+   * INITIALIZE SUPABASE
+   */
+
+  function initializeSupabase() {
+
+    try {
+
+      if (
+        typeof supabase === "undefined"
+      ) {
+
+        throw new Error(
+          "Supabase library did not load."
+        );
+
+      }
+
+
+      if (
+        typeof SUPABASE_URL === "undefined" ||
+        typeof SUPABASE_KEY === "undefined"
+      ) {
+
+        throw new Error(
+          "config.js is missing or incorrectly configured."
+        );
+
+      }
+
+
+      if (
+        !SUPABASE_URL ||
+        !SUPABASE_KEY
+      ) {
+
+        throw new Error(
+          "Supabase URL or key is empty."
+        );
+
+      }
+
+
+      client =
+        supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_KEY
+        );
+
+
+      loginStatus.textContent =
+        "Supabase connected. Enter your login.";
+
+      loginStatus.className =
+        "status";
+
+
+    } catch (error) {
+
+      console.error(
+        error
       );
 
+      loginStatus.textContent =
+        "Configuration error: "
+        + error.message;
 
-    const loginBox =
-      document.getElementById(
-        "loginBox"
-      );
+      loginStatus.className =
+        "status error";
 
+      loginButton.disabled =
+        true;
 
-    const dashboard =
-      document.getElementById(
-        "dashboard"
-      );
+    }
 
-
-    const loginForm =
-      document.getElementById(
-        "loginForm"
-      );
+  }
 
 
-    const loginStatus =
-      document.getElementById(
-        "loginStatus"
-      );
+  /*
+   * LOGIN
+   */
+
+  loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
 
 
-    const uploadForm =
-      document.getElementById(
-        "uploadForm"
-      );
+      loginStatus.textContent =
+        "Login button works. Connecting to Supabase...";
+
+      loginStatus.className =
+        "status";
 
 
-    const uploadStatus =
-      document.getElementById(
-        "uploadStatus"
-      );
+      if (!client) {
+
+        loginStatus.textContent =
+          "Supabase is not initialized.";
+
+        loginStatus.className =
+          "status error";
+
+        return;
+
+      }
 
 
-    const preview =
-      document.getElementById(
-        "preview"
-      );
+      const email =
+        document
+          .getElementById(
+            "email"
+          )
+          .value
+          .trim();
 
 
-    const progress =
-      document.getElementById(
-        "progress"
-      );
+      const password =
+        document
+          .getElementById(
+            "password"
+          )
+          .value;
 
 
-    const progressBar =
-      document.getElementById(
-        "progressBar"
-      );
+      if (!email || !password) {
+
+        loginStatus.textContent =
+          "Enter both email and password.";
+
+        loginStatus.className =
+          "status error";
+
+        return;
+
+      }
 
 
-    /*
-      CHECK EXISTING LOGIN
-    */
+      loginButton.disabled =
+        true;
 
-    async function checkSession() {
+      loginButton.textContent =
+        "Signing in...";
+
+
+      try {
+
+        const result =
+          await client.auth.signInWithPassword({
+
+            email: email,
+
+            password: password
+
+          });
+
+
+        if (result.error) {
+
+          throw result.error;
+
+        }
+
+
+        if (
+          !result.data ||
+          !result.data.session
+        ) {
+
+          throw new Error(
+            "Login completed but no session was returned."
+          );
+
+        }
+
+
+        loginStatus.textContent =
+          "✓ Login successful!";
+
+        loginStatus.className =
+          "status success";
+
+
+        showDashboard();
+
+
+      } catch (error) {
+
+        console.error(
+          "LOGIN ERROR:",
+          error
+        );
+
+
+        loginStatus.textContent =
+          "Login error: "
+          + (
+            error.message ||
+            "Unknown error"
+          );
+
+
+        loginStatus.className =
+          "status error";
+
+
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Login";
+
+      }
+
+    }
+  );
+
+
+  /*
+   * SHOW DASHBOARD
+   */
+
+  function showDashboard() {
+
+    loginBox.style.display =
+      "none";
+
+    dashboard.style.display =
+      "block";
+
+    logoutButton.style.display =
+      "block";
+
+
+    loadWallpapers();
+
+  }
+
+
+  /*
+   * LOGOUT
+   */
+
+  logoutButton.addEventListener(
+    "click",
+    async function() {
+
+      if (!client) {
+        return;
+      }
+
+
+      await client.auth.signOut();
+
+
+      dashboard.style.display =
+        "none";
+
+      loginBox.style.display =
+        "block";
+
+      logoutButton.style.display =
+        "none";
+
+
+      loginStatus.textContent =
+        "Logged out.";
+
+    }
+  );
+
+
+  /*
+   * CHECK EXISTING SESSION
+   */
+
+  async function checkSession() {
+
+    if (!client) {
+      return;
+    }
+
+
+    try {
 
       const {
         data,
@@ -713,280 +931,64 @@
 
 
       if (error) {
-
         console.error(error);
-
         return;
-
       }
 
 
-      if (data.session) {
+      if (
+        data &&
+        data.session
+      ) {
 
         showDashboard();
 
       }
 
-    }
+    } catch (error) {
 
-
-    /*
-      LOGIN
-    */
-
-    loginForm.addEventListener(
-      "submit",
-      async function(event) {
-
-        event.preventDefault();
-
-
-        const email =
-          document.getElementById(
-            "email"
-          ).value.trim();
-
-
-        const password =
-          document.getElementById(
-            "password"
-          ).value;
-
-
-        loginStatus.textContent =
-          "Signing in...";
-
-
-        const {
-          error
-        } =
-          await client.auth
-            .signInWithPassword({
-
-              email: email,
-
-              password: password
-
-            });
-
-
-        if (error) {
-
-          loginStatus.textContent =
-            error.message;
-
-          return;
-
-        }
-
-
-        loginStatus.textContent =
-          "Login successful.";
-
-
-        showDashboard();
-
-      }
-    );
-
-
-    /*
-      SHOW DASHBOARD
-    */
-
-    function showDashboard() {
-
-      loginBox.classList.add(
-        "hidden"
+      console.error(
+        error
       );
-
-
-      dashboard.classList.remove(
-        "hidden"
-      );
-
-
-      loadAdminWallpapers();
 
     }
 
-
-    /*
-      LOGOUT
-    */
-
-    document
-      .getElementById(
-        "logoutButton"
-      )
-      .addEventListener(
-        "click",
-        async function() {
-
-          await client.auth.signOut();
-
-          location.reload();
-
-        }
-      );
+  }
 
 
-    /*
-      IMAGE PREVIEW
-    */
+  /*
+   * IMAGE PREVIEW
+   */
 
-    document
-      .getElementById(
-        "image"
-      )
-      .addEventListener(
-        "change",
-        function(event) {
-
-          const file =
-            event.target.files[0];
-
-
-          if (!file) {
-
-            preview.style.display =
-              "none";
-
-            return;
-
-          }
-
-
-          if (
-            ![
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ].includes(file.type)
-          ) {
-
-            uploadStatus.textContent =
-              "Please use JPG, PNG or WEBP.";
-
-            event.target.value = "";
-
-            preview.style.display =
-              "none";
-
-            return;
-
-          }
-
-
-          if (
-            file.size >
-            10 * 1024 * 1024
-          ) {
-
-            uploadStatus.textContent =
-              "Maximum file size is 10 MB.";
-
-            event.target.value = "";
-
-            preview.style.display =
-              "none";
-
-            return;
-
-          }
-
-
-          preview.src =
-            URL.createObjectURL(
-              file
-            );
-
-
-          preview.style.display =
-            "block";
-
-
-          uploadStatus.textContent =
-            "";
-
-        }
-      );
-
-
-    /*
-      UPLOAD WALLPAPER
-    */
-
-    uploadForm.addEventListener(
-      "submit",
-      async function(event) {
-
-        event.preventDefault();
-
-
-        const {
-          data: sessionData
-        } =
-          await client.auth.getSession();
-
-
-        if (!sessionData.session) {
-
-          uploadStatus.textContent =
-            "Your session expired. Please log in again.";
-
-          return;
-
-        }
-
+  document
+    .getElementById(
+      "image"
+    )
+    .addEventListener(
+      "change",
+      function(event) {
 
         const file =
+          event.target.files[0];
+
+
+        const preview =
           document.getElementById(
-            "image"
-          ).files[0];
-
-
-        const title =
-          document.getElementById(
-            "title"
-          ).value.trim();
-
-
-        const category =
-          document.getElementById(
-            "category"
-          ).value;
-
-
-        const device =
-          document.getElementById(
-            "device"
-          ).value;
-
-
-        const description =
-          document.getElementById(
-            "description"
-          ).value.trim();
-
-
-        const premium =
-          document.getElementById(
-            "premium"
-          ).checked;
+            "preview"
+          );
 
 
         if (!file) {
 
-          uploadStatus.textContent =
-            "Please select an image.";
+          preview.style.display =
+            "none";
 
           return;
 
         }
 
 
-        const validTypes = [
+        const allowed = [
           "image/jpeg",
           "image/png",
           "image/webp"
@@ -994,13 +996,20 @@
 
 
         if (
-          !validTypes.includes(
+          !allowed.includes(
             file.type
           )
         ) {
 
-          uploadStatus.textContent =
-            "Only JPG, PNG and WEBP are supported.";
+          alert(
+            "Please select a JPG, PNG or WEBP image."
+          );
+
+          event.target.value =
+            "";
+
+          preview.style.display =
+            "none";
 
           return;
 
@@ -1012,12 +1021,53 @@
           10 * 1024 * 1024
         ) {
 
-          uploadStatus.textContent =
-            "Maximum file size is 10 MB.";
+          alert(
+            "Maximum file size is 10 MB."
+          );
+
+          event.target.value =
+            "";
+
+          preview.style.display =
+            "none";
 
           return;
 
         }
+
+
+        preview.src =
+          URL.createObjectURL(
+            file
+          );
+
+
+        preview.style.display =
+          "block";
+
+      }
+    );
+
+
+  /*
+   * UPLOAD
+   */
+
+  document
+    .getElementById(
+      "uploadForm"
+    )
+    .addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const uploadStatus =
+          document.getElementById(
+            "uploadStatus"
+          );
 
 
         const publishButton =
@@ -1026,31 +1076,131 @@
           );
 
 
-        publishButton.disabled =
-          true;
+        const progress =
+          document.getElementById(
+            "progress"
+          );
 
 
-        publishButton.textContent =
-          "Uploading...";
+        const progressBar =
+          document.getElementById(
+            "progressBar"
+          );
 
 
         uploadStatus.textContent =
-          "Uploading wallpaper...";
-
-
-        progress.style.display =
-          "block";
-
-
-        progressBar.style.width =
-          "20%";
+          "Checking session...";
 
 
         try {
 
+          const {
+            data
+          } =
+            await client.auth.getSession();
+
+
+          if (
+            !data ||
+            !data.session
+          ) {
+
+            throw new Error(
+              "You are not logged in."
+            );
+
+          }
+
+
+          const file =
+            document
+              .getElementById(
+                "image"
+              )
+              .files[0];
+
+
+          const title =
+            document
+              .getElementById(
+                "title"
+              )
+              .value
+              .trim();
+
+
+          const category =
+            document
+              .getElementById(
+                "category"
+              )
+              .value;
+
+
+          const device =
+            document
+              .getElementById(
+                "device"
+              )
+              .value;
+
+
+          const description =
+            document
+              .getElementById(
+                "description"
+              )
+              .value
+              .trim();
+
+
+          const premium =
+            document
+              .getElementById(
+                "premium"
+              )
+              .checked;
+
+
+          if (!file) {
+
+            throw new Error(
+              "Please select an image."
+            );
+
+          }
+
+
+          if (!title) {
+
+            throw new Error(
+              "Please enter a title."
+            );
+
+          }
+
+
+          publishButton.disabled =
+            true;
+
+          publishButton.textContent =
+            "Uploading...";
+
+
+          progress.style.display =
+            "block";
+
+          progressBar.style.width =
+            "15%";
+
+
+          uploadStatus.textContent =
+            "Uploading image to Storage...";
+
+
           /*
-            CREATE UNIQUE FILE NAME
-          */
+           * FILE PATH
+           */
 
           const extension =
             file.name
@@ -1071,11 +1221,12 @@
 
 
           /*
-            UPLOAD TO SUPABASE STORAGE
-          */
+           * STORAGE UPLOAD
+           */
 
           const {
-            error: uploadError
+            error:
+              storageError
           } =
             await client
               .storage
@@ -1096,9 +1247,12 @@
               );
 
 
-          if (uploadError) {
+          if (storageError) {
 
-            throw uploadError;
+            throw new Error(
+              "Storage: "
+              + storageError.message
+            );
 
           }
 
@@ -1107,12 +1261,17 @@
             "60%";
 
 
+          uploadStatus.textContent =
+            "Image uploaded. Saving information...";
+
+
           /*
-            GET PUBLIC URL
-          */
+           * PUBLIC URL
+           */
 
           const {
-            data: urlData
+            data:
+              publicData
           } =
             client
               .storage
@@ -1123,23 +1282,24 @@
 
 
           if (
-            !urlData ||
-            !urlData.publicUrl
+            !publicData ||
+            !publicData.publicUrl
           ) {
 
             throw new Error(
-              "Could not create image URL."
+              "Could not create public image URL."
             );
 
           }
 
 
           /*
-            SAVE WALLPAPER TO DATABASE
-          */
+           * DATABASE INSERT
+           */
 
           const {
-            error: databaseError
+            error:
+              databaseError
           } =
             await client
               .from("wallpapers")
@@ -1158,7 +1318,7 @@
                   description,
 
                 image_url:
-                  urlData.publicUrl,
+                  publicData.publicUrl,
 
                 storage_path:
                   storagePath,
@@ -1178,9 +1338,8 @@
           if (databaseError) {
 
             /*
-              REMOVE IMAGE IF
-              DATABASE INSERT FAILS
-            */
+             * CLEAN UP STORAGE
+             */
 
             await client
               .storage
@@ -1190,7 +1349,10 @@
               ]);
 
 
-            throw databaseError;
+            throw new Error(
+              "Database: "
+              + databaseError.message
+            );
 
           }
 
@@ -1203,20 +1365,55 @@
             "✓ Wallpaper published successfully!";
 
 
-          /*
-            RESET FORM
-          */
-
-          uploadForm.reset();
+          uploadStatus.className =
+            "status success";
 
 
-          preview.src =
-            "";
+          document
+            .getElementById(
+              "uploadForm"
+            )
+            .reset();
 
 
-          preview.style.display =
+          document
+            .getElementById(
+              "preview"
+            )
+            .style.display =
             "none";
 
+
+          await loadWallpapers();
+
+
+        } catch (error) {
+
+          console.error(
+            "UPLOAD ERROR:",
+            error
+          );
+
+
+          uploadStatus.textContent =
+            "Upload error: "
+            + (
+              error.message ||
+              "Unknown error"
+            );
+
+
+          uploadStatus.className =
+            "status error";
+
+
+        } finally {
+
+          publishButton.disabled =
+            false;
+
+          publishButton.textContent =
+            "Publish Wallpaper";
 
           setTimeout(
             function() {
@@ -1231,52 +1428,29 @@
             1000
           );
 
-
-          /*
-            REFRESH WALLPAPER LIST
-          */
-
-          await loadAdminWallpapers();
-
-
-        } catch (error) {
-
-          console.error(
-            "Upload error:",
-            error
-          );
-
-
-          uploadStatus.textContent =
-            "Upload error: "
-            + error.message;
-
-
-          progress.style.display =
-            "none";
-
-          progressBar.style.width =
-            "0%";
-
         }
-
-
-        publishButton.disabled =
-          false;
-
-
-        publishButton.textContent =
-          "Publish Wallpaper";
 
       }
     );
 
 
-    /*
-      LOAD WALLPAPERS
-    */
+  /*
+   * LOAD WALLPAPERS
+   */
 
-    async function loadAdminWallpapers() {
+  async function loadWallpapers() {
+
+    const list =
+      document.getElementById(
+        "wallList"
+      );
+
+
+    list.innerHTML =
+      "<p style='color:#777'>Loading...</p>";
+
+
+    try {
 
       const {
         data,
@@ -1295,25 +1469,9 @@
 
       if (error) {
 
-        console.error(error);
-
-        document.getElementById(
-          "wallList"
-        ).innerHTML =
-          `<p style="color:#888">
-            Unable to load wallpapers:
-            ${escapeHtml(error.message)}
-          </p>`;
-
-        return;
+        throw error;
 
       }
-
-
-      const list =
-        document.getElementById(
-          "wallList"
-        );
 
 
       list.innerHTML =
@@ -1343,22 +1501,21 @@
             );
 
 
-          const item =
+          const article =
             document.createElement(
               "article"
             );
 
 
-          item.className =
+          article.className =
             "wall";
 
 
-          item.innerHTML = `
+          article.innerHTML = `
 
             <img
               src="${escapeHtml(wallpaper.image_url)}"
               alt="${escapeHtml(wallpaper.title)}"
-              loading="lazy"
             >
 
             <div class="wall-info">
@@ -1385,7 +1542,7 @@
 
               <button
                 class="delete"
-                data-id="${escapeHtml(wallpaper.id)}"
+                type="button"
               >
                 Delete
               </button>
@@ -1395,30 +1552,39 @@
           `;
 
 
-          const deleteButton =
-            item.querySelector(
+          article
+            .querySelector(
               ".delete"
+            )
+            .addEventListener(
+              "click",
+              function() {
+
+                deleteWallpaper(
+                  wallpaper
+                );
+
+              }
             );
 
 
-          deleteButton.addEventListener(
-            "click",
-            function() {
-
-              deleteWallpaper(
-                wallpaper.id
-              );
-
-            }
-          );
-
-
           list.appendChild(
-            item
+            article
           );
 
         }
       );
+
+
+      if (
+        !data ||
+        data.length === 0
+      ) {
+
+        list.innerHTML =
+          "<p style='color:#777'>No wallpapers yet.</p>";
+
+      }
 
 
       document.getElementById(
@@ -1441,188 +1607,150 @@
         views;
 
 
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+
+      list.innerHTML =
+        `<p class="error">
+          Could not load wallpapers:
+          ${escapeHtml(error.message)}
+        </p>`;
+
+    }
+
+  }
+
+
+  /*
+   * DELETE
+   */
+
+  async function deleteWallpaper(
+    wallpaper
+  ) {
+
+    const confirmed =
+      confirm(
+        "Delete this wallpaper permanently?"
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    try {
+
+      const {
+        error:
+          databaseError
+      } =
+        await client
+          .from("wallpapers")
+          .delete()
+          .eq(
+            "id",
+            wallpaper.id
+          );
+
+
+      if (databaseError) {
+
+        throw databaseError;
+
+      }
+
+
       if (
-        !data ||
-        data.length === 0
+        wallpaper.storage_path
       ) {
 
-        list.innerHTML =
-          `<p style="color:#777">
-            No wallpapers yet.
-          </p>`;
-
-      }
-
-    }
-
-
-    /*
-      DELETE WALLPAPER
-    */
-
-    async function deleteWallpaper(
-      id
-    ) {
-
-      const confirmed =
-        confirm(
-          "Delete this wallpaper permanently?"
-        );
-
-
-      if (!confirmed) {
-
-        return;
-
-      }
-
-
-      try {
-
-        /*
-          FIND STORAGE PATH
-        */
-
         const {
-          data,
-          error: findError
+          error:
+            storageError
         } =
           await client
+            .storage
             .from("wallpapers")
-            .select(
-              "storage_path"
-            )
-            .eq(
-              "id",
-              id
-            )
-            .single();
+            .remove([
+              wallpaper.storage_path
+            ]);
 
 
-        if (findError) {
+        if (storageError) {
 
-          throw findError;
+          console.warn(
+            storageError
+          );
 
         }
-
-
-        /*
-          DELETE DATABASE RECORD
-        */
-
-        const {
-          error: deleteError
-        } =
-          await client
-            .from("wallpapers")
-            .delete()
-            .eq(
-              "id",
-              id
-            );
-
-
-        if (deleteError) {
-
-          throw deleteError;
-
-        }
-
-
-        /*
-          DELETE IMAGE
-          FROM STORAGE
-        */
-
-        if (
-          data &&
-          data.storage_path
-        ) {
-
-          const {
-            error: storageError
-          } =
-            await client
-              .storage
-              .from("wallpapers")
-              .remove([
-                data.storage_path
-              ]);
-
-
-          if (storageError) {
-
-            console.error(
-              storageError
-            );
-
-          }
-
-        }
-
-
-        await loadAdminWallpapers();
-
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
-
-        alert(
-          "Could not delete wallpaper: "
-          + error.message
-        );
 
       }
 
-    }
+
+      await loadWallpapers();
 
 
-    /*
-      ESCAPE HTML
-    */
+    } catch (error) {
 
-    function escapeHtml(
-      text
-    ) {
-
-      return String(
-        text ?? ""
-      ).replace(
-        /[&<>"']/g,
-        function(character) {
-
-          return {
-
-            "&": "&amp;",
-
-            "<": "&lt;",
-
-            ">": "&gt;",
-
-            '"': "&quot;",
-
-            "'": "&#039;"
-
-          }[character];
-
-        }
+      alert(
+        "Delete error: "
+        + error.message
       );
 
     }
 
+  }
 
-    /*
-      START
-    */
 
-    checkSession();
+  /*
+   * ESCAPE HTML
+   */
 
-  </script>
+  function escapeHtml(
+    value
+  ) {
+
+    return String(
+      value ?? ""
+    ).replace(
+      /[&<>"']/g,
+      function(character) {
+
+        return {
+
+          "&": "&amp;",
+
+          "<": "&lt;",
+
+          ">": "&gt;",
+
+          '"': "&quot;",
+
+          "'": "&#039;"
+
+        }[character];
+
+      }
+    );
+
+  }
+
+
+  /*
+   * START
+   */
+
+  initializeSupabase();
+
+  checkSession();
+
+</script>
 
 </body>
-
 </html>
